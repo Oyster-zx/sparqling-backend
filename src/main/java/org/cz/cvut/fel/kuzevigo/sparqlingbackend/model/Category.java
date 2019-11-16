@@ -1,28 +1,32 @@
 package org.cz.cvut.fel.kuzevigo.sparqlingbackend.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.*;
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.serializer.CategorySerializer;
+
+import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@EqualsAndHashCode(exclude = "subTerms")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     @Column
     String name;
-    @OneToOne
-    Category parentCategory;
+
+    @JsonSerialize(using = CategorySerializer.class)
+    @JsonIgnoreProperties("subTerms")
+    @OneToMany
+    List<Category> subTerms;
 }
