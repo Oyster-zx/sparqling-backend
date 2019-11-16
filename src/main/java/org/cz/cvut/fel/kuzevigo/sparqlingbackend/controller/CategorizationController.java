@@ -7,12 +7,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * TODO ikuzevanov popis
- * <br>Historie:<br>
- * {{SVN-LOG}}
- * @author ikuzevanov on 2019-11-15.
- */
 @RestController
 @CrossOrigin( origins = "http://localhost:3000")
 public class CategorizationController {

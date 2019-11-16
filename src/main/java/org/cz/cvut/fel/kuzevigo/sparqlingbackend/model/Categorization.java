@@ -2,24 +2,39 @@ package org.cz.cvut.fel.kuzevigo.sparqlingbackend.model;
 
 import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@EqualsAndHashCode(exclude = "categories")
 public class Categorization {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
     @OneToOne
-    QueryDocument queryDocument;
+    CategorizationScheme categorizationScheme;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    List<Category> categories;
+    @JsonIgnore
+    @OneToMany
+    List<QueryCategorization> queryCategorizations;
+
+    @JsonIgnore
+    @ManyToOne
+    QueryDocumentList queryDocumentList;
 }
