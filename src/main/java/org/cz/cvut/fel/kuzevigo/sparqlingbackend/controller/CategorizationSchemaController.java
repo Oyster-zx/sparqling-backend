@@ -1,7 +1,7 @@
 package org.cz.cvut.fel.kuzevigo.sparqlingbackend.controller;
 
-import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.CategorizationSchemaRepository;
-import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.CategorizationSchema;
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.CategorizationSchemeRepository;
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.CategorizationScheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class CategorizationSchemaController {
 
     @Autowired
-    CategorizationSchemaRepository categorizationSchemaRepository;
+    CategorizationSchemeRepository categorizationSchemeRepository;
 
     @GetMapping("/categorizationSchemas")
-    Iterable<CategorizationSchema> getCategorizationSchemas() {
-        return categorizationSchemaRepository.findAll();
+    Iterable<CategorizationScheme> getCategorizationSchemas() {
+        return categorizationSchemeRepository.findAll();
     }
 }

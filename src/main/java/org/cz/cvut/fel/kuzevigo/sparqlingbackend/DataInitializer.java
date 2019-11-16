@@ -1,13 +1,17 @@
 package org.cz.cvut.fel.kuzevigo.sparqlingbackend;
 
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.CategorizationRepository;
-import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.CategorizationSchemaRepository;
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.QueryCategorizationRepository;
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.CategorizationSchemeRepository;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.CategoryRepository;
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.QueryDocumentListRepository;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.QueryDocumentRepository;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.Categorization;
-import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.CategorizationSchema;
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.QueryCategorization;
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.CategorizationScheme;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.Category;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.QueryDocument;
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.QueryDocumentList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -25,10 +29,16 @@ public class DataInitializer implements CommandLineRunner {
     QueryDocumentRepository queryDocumentRepository;
 
     @Autowired
+    QueryDocumentListRepository queryDocumentListRepository;
+
+    @Autowired
     CategoryRepository categoryRepository;
 
     @Autowired
-    CategorizationSchemaRepository categorizationSchemaRepository;
+    CategorizationSchemeRepository categorizationSchemeRepository;
+
+    @Autowired
+    QueryCategorizationRepository queryCategorizationRepository;
 
     @Autowired
     CategorizationRepository categorizationRepository;
@@ -75,7 +85,8 @@ public class DataInitializer implements CommandLineRunner {
                         "ORDER BY ASC (?name)").build();
         document2 = queryDocumentRepository.save(document2);
 
-        QueryDocument document3 = QueryDocument.builder().title("All museums in Barcelona with coordinates").description("All museums in Barcelona with coordinates and some more description")
+        QueryDocument document3 = QueryDocument.builder().title("All museums in Barcelona with coordinates")
+                .description("All museums in Barcelona with coordinates and some more description")
                 .code("#added before 2016-10\n" +
                         "\n" +
                         "#All museums (including subclass of museum) in Barcelona\n" +
@@ -92,6 +103,10 @@ public class DataInitializer implements CommandLineRunner {
                         "}\n" +
                         "ORDER BY ASC (?name)").build();
         document3 = queryDocumentRepository.save(document3);
+
+        QueryDocumentList queryDocumentList = QueryDocumentList.builder().title("Test queries").build();
+        queryDocumentList.setQueryDocuments(Arrays.asList(document1, document2, document3));
+        queryDocumentListRepository.save(queryDocumentList);
 
         Category culture = Category.builder().name("Culture").build();
         culture = categoryRepository.save(culture);
@@ -113,21 +128,23 @@ public class DataInitializer implements CommandLineRunner {
         barcelona.setSubTerms(Arrays.asList(coordinates));
         barcelona = categoryRepository.save(barcelona);
 
-        Categorization categorization1 = Categorization.builder().queryDocument(document1)
+        QueryCategorization queryCategorization1 = QueryCategorization.builder().queryDocument(document1)
                 .categories(Arrays.asList(culture, museums, britain)).build();
-        categorization1 = categorizationRepository.save(categorization1);
-        Categorization categorization2 = Categorization.builder().queryDocument(document2)
+        queryCategorization1 = queryCategorizationRepository.save(queryCategorization1);
+        QueryCategorization queryCategorization2 = QueryCategorization.builder().queryDocument(document2)
                 .categories(Arrays.asList(culture, museums, barcelona)).build();
-        categorization2 = categorizationRepository.save(categorization2);
-        Categorization categorization3 = Categorization.builder().queryDocument(document3)
+        queryCategorization2 = queryCategorizationRepository.save(queryCategorization2);
+        QueryCategorization queryCategorization3 = QueryCategorization.builder().queryDocument(document3)
                 .categories(Arrays.asList(culture, museums, barcelona, coordinates)).build();
-        categorization3 = categorizationRepository.save(categorization3);
+        queryCategorization3 = queryCategorizationRepository.save(queryCategorization3);
 
-        CategorizationSchema categorizationSchema = CategorizationSchema.builder().name("schema1").build();
-        categorizationSchema.setCategorizations(new ArrayList<>());
-        categorizationSchema.getCategorizations().add(categorization1);
-        categorizationSchema.getCategorizations().add(categorization2);
-        categorizationSchema.getCategorizations().add(categorization3);
-        categorizationSchemaRepository.save(categorizationSchema);
+        CategorizationScheme categorizationScheme = CategorizationScheme.builder().title("schema1").build();
+        categorizationScheme.setCategories(Arrays.asList(culture, museums, britain, barcelona, coordinates));
+        categorizationSchemeRepository.save(categorizationScheme);
+
+        Categorization categorization = Categorization.builder().queryDocumentList(queryDocumentList)
+                .categorizationScheme(categorizationScheme)
+                .queryCategorizations(Arrays.asList(queryCategorization1, queryCategorization2, queryCategorization3)).build();
+        categorizationRepository.save(categorization);
     }
 }

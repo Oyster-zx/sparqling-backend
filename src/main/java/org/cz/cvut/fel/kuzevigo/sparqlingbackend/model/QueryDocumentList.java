@@ -19,12 +19,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class CategorizationSchema {
+public class QueryDocumentList {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     @Column
-    String name;
+    String title;
+    @Column
+    String description;
     @OneToMany
-    List<Categorization> categorizations;
+    List<QueryDocument> queryDocuments;
 }

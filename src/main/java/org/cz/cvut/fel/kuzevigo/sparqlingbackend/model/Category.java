@@ -22,6 +22,7 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
+
     @Column
     String name;
 
