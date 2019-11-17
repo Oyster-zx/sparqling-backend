@@ -138,7 +138,7 @@ public class DataInitializer implements CommandLineRunner {
                 .categories(Arrays.asList(culture, museums, barcelona, coordinates)).build();
         queryCategorization3 = queryCategorizationRepository.save(queryCategorization3);
 
-        CategorizationScheme categorizationScheme = CategorizationScheme.builder().title("schema1").build();
+        CategorizationScheme categorizationScheme = CategorizationScheme.builder().title("Wikidata tutorial").build();
         categorizationScheme.setCategories(Arrays.asList(culture, museums, britain, barcelona, coordinates));
         categorizationSchemeRepository.save(categorizationScheme);
 
