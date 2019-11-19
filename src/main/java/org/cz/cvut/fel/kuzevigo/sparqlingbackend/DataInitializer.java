@@ -89,13 +89,18 @@ public class DataInitializer implements CommandLineRunner {
                 .description("All museums in Barcelona with coordinates and some more description")
                 .code("#added before 2016-10\n" +
                         "\n" +
-                        "#All museums (including subclass of museum) in Barcelona\n" +
-                        "SELECT DISTINCT ?item ?name ?lat ?lon\n" +
+                        "#All museums (including subclass of museum) in Barcelona with coordinates\n" +
+                        "SELECT DISTINCT ?item ?name ?coord ?lat ?lon\n" +
                         "WHERE\n" +
                         "{\n" +
                         " hint:Query hint:optimizer \"None\" .\n" +
                         " ?item wdt:P131* wd:Q1492 .\n" +
                         " ?item wdt:P31/wdt:P279* wd:Q33506 .\n" +
+                        " ?item wdt:P625 ?coord .\n" +
+                        " ?item p:P625 ?coordinate .\n" +
+                        " ?coordinate psv:P625 ?coordinate_node .\n" +
+                        " ?coordinate_node wikibase:geoLatitude ?lat .\n" +
+                        " ?coordinate_node wikibase:geoLongitude ?lon .\n" +
                         " SERVICE wikibase:label {\n" +
                         " bd:serviceParam wikibase:language \"ca\" .\n" +
                         " ?item rdfs:label ?name\n" +
