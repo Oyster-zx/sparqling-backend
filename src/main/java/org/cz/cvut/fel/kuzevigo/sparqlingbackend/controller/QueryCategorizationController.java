@@ -30,7 +30,7 @@ public class QueryCategorizationController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}/deleteQueryCategorization")
+    @DeleteMapping("/deleteQueryCategorization/{id}")
     public ResponseEntity deleteQueryCategorization(@PathVariable Long id) {
         queryCategorizationRepository.deleteById(id);
         return ResponseEntity.ok().build();

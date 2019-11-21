@@ -2,17 +2,12 @@ package org.cz.cvut.fel.kuzevigo.sparqlingbackend.model;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,12 +26,12 @@ public class QueryCategorization {
     Long id;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     Categorization categorization;
 
     @OneToOne(cascade = CascadeType.MERGE)
     QueryDocument queryDocument;
 
-    @OneToMany(mappedBy = "queryCategorization", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "queryCategorization", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     Set<CategoryInCategorization> categoryInCategorizations;
 }

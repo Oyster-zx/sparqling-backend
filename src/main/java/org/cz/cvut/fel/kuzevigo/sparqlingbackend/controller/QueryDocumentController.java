@@ -6,8 +6,12 @@ import java.util.stream.Collectors;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.CategorizationRepository;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.QueryCategorizationRepository;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.QueryDocumentRepository;
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dto.QueryCategorizationDto;
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dto.QueryDocumentDto;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.Categorization;
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.Category;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.QueryCategorization;
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.QueryDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,11 +39,19 @@ public class QueryDocumentController {
     QueryCategorizationRepository queryCategorizationRepository;
 
     @GetMapping("/queryDocuments")
-    Iterable<QueryCategorization> getQueryDocuments(@RequestParam(value = "categorizationId") Long categorizationId,
-            @RequestParam(value = "categoriesIds") List<Long> categoriesIds) {
+    List<QueryCategorizationDto> getQueryDocuments(@RequestParam(value = "categorizationId") Long categorizationId,
+                                                   @RequestParam(value = "categoriesIds") List<Long> categoriesIds) {
         Categorization categorization = categorizationRepository.findById(categorizationId).get();
-        return categorization.getQueryCategorizations().stream().filter(queryCategorization ->
+        List<QueryCategorization> queryCategorizations = categorization.getQueryCategorizations().stream().filter(queryCategorization ->
                 queryCategorization.getCategoryInCategorizations().stream().map(categoryInCategorization -> categoryInCategorization.getCategory().getId())
                         .collect(Collectors.toList()).containsAll(categoriesIds)).collect(Collectors.toList());
+        return queryCategorizations.stream().map(queryCategorization -> {
+            return QueryCategorizationDto.builder().id(queryCategorization.getId()).queryDocument(queryCategorization.getQueryDocument())
+                    .categories(
+                            queryCategorization.getCategoryInCategorizations().stream().map(categoryInCategorization -> Category.builder().id(categoryInCategorization.getCategory().getId())
+                                    .name(categoryInCategorization.getCategory().getName())
+                                    .subTerms(categoryInCategorization.getCategory().getSubTerms()).build()).collect(Collectors.toList())
+                    ).build();
+        }).collect(Collectors.toList());
     }
 }

@@ -28,6 +28,6 @@ public class QueryDocumentList {
     String title;
     @Column
     String description;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     Set<QueryDocument> queryDocuments;
 }

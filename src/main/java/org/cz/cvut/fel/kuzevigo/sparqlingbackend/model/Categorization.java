@@ -2,13 +2,7 @@ package org.cz.cvut.fel.kuzevigo.sparqlingbackend.model;
 
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -30,8 +24,7 @@ public class Categorization {
     @OneToOne
     CategorizationScheme categorizationScheme;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "categorization")
+    @OneToMany(mappedBy = "categorization", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH, CascadeType.REMOVE})
     Set<QueryCategorization> queryCategorizations;
 
     @JsonIgnore

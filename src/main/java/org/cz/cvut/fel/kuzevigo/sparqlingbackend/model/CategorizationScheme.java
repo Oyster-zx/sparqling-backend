@@ -2,12 +2,7 @@ package org.cz.cvut.fel.kuzevigo.sparqlingbackend.model;
 
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.serializer.CategorySerializer;
 
@@ -33,6 +28,6 @@ public class CategorizationScheme {
     String description;
 
     @JsonSerialize(using = CategorySerializer.class)
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     Set<Category> categories;
 }
