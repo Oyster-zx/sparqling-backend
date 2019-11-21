@@ -1,14 +1,15 @@
 package org.cz.cvut.fel.kuzevigo.sparqlingbackend.model;
 
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,14 +21,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class QueryDocumentList {
+public class CategoryInCategorization {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
-    @Column
-    String title;
-    @Column
-    String description;
-    @OneToMany(cascade = CascadeType.ALL)
-    Set<QueryDocument> queryDocuments;
+
+    @JsonIgnore
+    @ManyToOne(optional = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    QueryCategorization queryCategorization;
+
+    @ManyToOne
+    Category category;
 }

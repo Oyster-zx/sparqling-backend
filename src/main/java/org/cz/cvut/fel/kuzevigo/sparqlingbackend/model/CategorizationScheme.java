@@ -1,6 +1,6 @@
 package org.cz.cvut.fel.kuzevigo.sparqlingbackend.model;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,5 +34,5 @@ public class CategorizationScheme {
 
     @JsonSerialize(using = CategorySerializer.class)
     @OneToMany
-    List<Category> categories;
+    Set<Category> categories;
 }

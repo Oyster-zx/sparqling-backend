@@ -1,6 +1,6 @@
 package org.cz.cvut.fel.kuzevigo.sparqlingbackend.model;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,8 +31,8 @@ public class Categorization {
     CategorizationScheme categorizationScheme;
 
     @JsonIgnore
-    @OneToMany
-    List<QueryCategorization> queryCategorizations;
+    @OneToMany(mappedBy = "categorization")
+    Set<QueryCategorization> queryCategorizations;
 
     @JsonIgnore
     @ManyToOne

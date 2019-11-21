@@ -1,14 +1,12 @@
 package org.cz.cvut.fel.kuzevigo.sparqlingbackend.controller;
 
-import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.QueryCategorizationRepository;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.CategorizationSchemeRepository;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.CategoryRepository;
-import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.CategorizationScheme;
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.QueryCategorizationRepository;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**

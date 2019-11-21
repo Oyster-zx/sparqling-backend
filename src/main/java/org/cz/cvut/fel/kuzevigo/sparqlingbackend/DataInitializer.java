@@ -1,15 +1,19 @@
 package org.cz.cvut.fel.kuzevigo.sparqlingbackend;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.CategorizationRepository;
-import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.QueryCategorizationRepository;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.CategorizationSchemeRepository;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.CategoryRepository;
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.QueryCategorizationRepository;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.QueryDocumentListRepository;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.QueryDocumentRepository;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.Categorization;
-import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.QueryCategorization;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.CategorizationScheme;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.Category;
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.CategoryInCategorization;
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.QueryCategorization;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.QueryDocument;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.QueryDocumentList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +21,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 @Component
 @Slf4j
@@ -65,7 +66,7 @@ public class DataInitializer implements CommandLineRunner {
                         + "  SERVICE wikibase:label { bd:serviceParam wikibase:language \"fr\". } #french label\n"
                         + "}\n"
                         + "ORDER BY  ?villeIdLabel").build();
-        document1 = queryDocumentRepository.save(document1);
+        //document1 = queryDocumentRepository.save(document1);
 
         QueryDocument document2 = QueryDocument.builder().title("All museums in Barcelona").description("All museums in Barcelona with some more description")
                 .code("#added before 2016-10\n" +
@@ -83,7 +84,7 @@ public class DataInitializer implements CommandLineRunner {
                         " }\n" +
                         "}\n" +
                         "ORDER BY ASC (?name)").build();
-        document2 = queryDocumentRepository.save(document2);
+        //document2 = queryDocumentRepository.save(document2);
 
         QueryDocument document3 = QueryDocument.builder().title("All museums in Barcelona with coordinates")
                 .description("All museums in Barcelona with coordinates and some more description")
@@ -107,10 +108,10 @@ public class DataInitializer implements CommandLineRunner {
                         " }\n" +
                         "}\n" +
                         "ORDER BY ASC (?name)").build();
-        document3 = queryDocumentRepository.save(document3);
+        //document3 = queryDocumentRepository.save(document3);
 
         QueryDocumentList queryDocumentList = QueryDocumentList.builder().title("Test queries").build();
-        queryDocumentList.setQueryDocuments(Arrays.asList(document1, document2, document3));
+        queryDocumentList.setQueryDocuments(new HashSet<>(Arrays.asList(document1, document2, document3)));
         queryDocumentListRepository.save(queryDocumentList);
 
         Category culture = Category.builder().name("Culture").build();
@@ -124,32 +125,47 @@ public class DataInitializer implements CommandLineRunner {
         Category coordinates = Category.builder().name("Coordinates").build();
         coordinates = categoryRepository.save(coordinates);
 
-        culture.setSubTerms(Arrays.asList(museums));
+        culture.setSubTerms(new HashSet<>(Arrays.asList(museums)));
         culture = categoryRepository.save(culture);
 
-        museums.setSubTerms(Arrays.asList(britain, barcelona));
+        museums.setSubTerms(new HashSet<>(Arrays.asList(britain, barcelona)));
         museums = categoryRepository.save(museums);
 
-        barcelona.setSubTerms(Arrays.asList(coordinates));
+        barcelona.setSubTerms(new HashSet<>(Arrays.asList(coordinates)));
         barcelona = categoryRepository.save(barcelona);
 
-        QueryCategorization queryCategorization1 = QueryCategorization.builder().queryDocument(document1)
-                .categories(Arrays.asList(culture, museums, britain)).build();
+        QueryCategorization queryCategorization1 = QueryCategorization.builder().queryDocument(document1).build();
+        queryCategorization1.setCategoryInCategorizations(new HashSet<>(Arrays.asList(
+                CategoryInCategorization.builder().category(culture).queryCategorization(queryCategorization1).build(),
+                CategoryInCategorization.builder().category(museums).queryCategorization(queryCategorization1).build(),
+                CategoryInCategorization.builder().category(britain).queryCategorization(queryCategorization1).build()
+        )));
         queryCategorization1 = queryCategorizationRepository.save(queryCategorization1);
-        QueryCategorization queryCategorization2 = QueryCategorization.builder().queryDocument(document2)
-                .categories(Arrays.asList(culture, museums, barcelona)).build();
+
+        QueryCategorization queryCategorization2 = QueryCategorization.builder().queryDocument(document2).build();
+        queryCategorization2.setCategoryInCategorizations(new HashSet<>(Arrays.asList(
+                CategoryInCategorization.builder().category(culture).queryCategorization(queryCategorization2).build(),
+                CategoryInCategorization.builder().category(museums).queryCategorization(queryCategorization2).build(),
+                CategoryInCategorization.builder().category(barcelona).queryCategorization(queryCategorization2).build()
+        )));
         queryCategorization2 = queryCategorizationRepository.save(queryCategorization2);
-        QueryCategorization queryCategorization3 = QueryCategorization.builder().queryDocument(document3)
-                .categories(Arrays.asList(culture, museums, barcelona, coordinates)).build();
+
+        QueryCategorization queryCategorization3 = QueryCategorization.builder().queryDocument(document3).build();
+        queryCategorization3.setCategoryInCategorizations(new HashSet<>(Arrays.asList(
+                CategoryInCategorization.builder().category(culture).queryCategorization(queryCategorization3).build(),
+                CategoryInCategorization.builder().category(museums).queryCategorization(queryCategorization3).build(),
+                CategoryInCategorization.builder().category(barcelona).queryCategorization(queryCategorization3).build(),
+                CategoryInCategorization.builder().category(coordinates).queryCategorization(queryCategorization3).build()
+        )));
         queryCategorization3 = queryCategorizationRepository.save(queryCategorization3);
 
         CategorizationScheme categorizationScheme = CategorizationScheme.builder().title("Wikidata tutorial").build();
-        categorizationScheme.setCategories(Arrays.asList(culture, museums, britain, barcelona, coordinates));
+        categorizationScheme.setCategories(new HashSet<>(Arrays.asList(culture, museums, britain, barcelona, coordinates)));
         categorizationSchemeRepository.save(categorizationScheme);
 
         Categorization categorization = Categorization.builder().queryDocumentList(queryDocumentList)
                 .categorizationScheme(categorizationScheme)
-                .queryCategorizations(Arrays.asList(queryCategorization1, queryCategorization2, queryCategorization3)).build();
+                .queryCategorizations(new HashSet<>(Arrays.asList(queryCategorization1, queryCategorization2, queryCategorization3))).build();
         categorizationRepository.save(categorization);
     }
 }

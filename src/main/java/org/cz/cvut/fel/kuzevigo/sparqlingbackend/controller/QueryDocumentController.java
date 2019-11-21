@@ -1,22 +1,18 @@
 package org.cz.cvut.fel.kuzevigo.sparqlingbackend.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.CategorizationRepository;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.QueryCategorizationRepository;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.QueryDocumentRepository;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.Categorization;
-import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.Category;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.QueryCategorization;
-import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.QueryDocument;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * TODO ikuzevanov popis
@@ -40,10 +36,10 @@ public class QueryDocumentController {
 
     @GetMapping("/queryDocuments")
     Iterable<QueryCategorization> getQueryDocuments(@RequestParam(value = "categorizationId") Long categorizationId,
-                                                    @RequestParam(value = "categoriesIds") List<Long> categoriesIds) {
+            @RequestParam(value = "categoriesIds") List<Long> categoriesIds) {
         Categorization categorization = categorizationRepository.findById(categorizationId).get();
         return categorization.getQueryCategorizations().stream().filter(queryCategorization ->
-                queryCategorization.getCategories().stream().map(Category::getId)
+                queryCategorization.getCategoryInCategorizations().stream().map(categoryInCategorization -> categoryInCategorization.getCategory().getId())
                         .collect(Collectors.toList()).containsAll(categoriesIds)).collect(Collectors.toList());
     }
 }
