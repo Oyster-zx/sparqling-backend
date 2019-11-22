@@ -24,7 +24,7 @@ public class Categorization {
     @OneToOne
     CategorizationScheme categorizationScheme;
 
-    @OneToMany(mappedBy = "categorization", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH, CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH, CascadeType.REMOVE})
     Set<QueryCategorization> queryCategorizations;
 
     @JsonIgnore

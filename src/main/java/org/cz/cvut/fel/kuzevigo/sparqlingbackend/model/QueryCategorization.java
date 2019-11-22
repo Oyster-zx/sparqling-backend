@@ -19,19 +19,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@EqualsAndHashCode(exclude = {"categoryInCategorizations", "categorization"})
+@EqualsAndHashCode(exclude = {"categoryInCategorizations"})
 public class QueryCategorization {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
-    @JsonIgnore
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-    Categorization categorization;
+//    @JsonIgnore
+//    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+//    Categorization categorization;
 
     @OneToOne(cascade = CascadeType.MERGE)
     QueryDocument queryDocument;
 
-    @OneToMany(mappedBy = "queryCategorization", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true, fetch = FetchType.EAGER)
     Set<CategoryInCategorization> categoryInCategorizations;
 }

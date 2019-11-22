@@ -1,6 +1,11 @@
 package org.cz.cvut.fel.kuzevigo.sparqlingbackend.controller;
 
+import java.util.stream.Collectors;
+
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.CategoryInCategorizationRepository;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.QueryCategorizationRepository;
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dto.QueryCategorizationDto;
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.CategoryInCategorization;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.QueryCategorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +24,22 @@ public class QueryCategorizationController {
     @Autowired
     QueryCategorizationRepository queryCategorizationRepository;
 
+    @Autowired
+    CategoryInCategorizationRepository categoryInCategorizationRepository;
+
     @GetMapping("/queryCategorizations")
     Iterable<QueryCategorization> getQueryCategorizations() {
         return queryCategorizationRepository.findAll();
     }
 
     @PostMapping("/saveQueryCategorization")
-    public ResponseEntity saveQueryCategorization(@RequestBody QueryCategorization queryCategorization) {
+    public ResponseEntity saveQueryCategorization(@RequestBody QueryCategorizationDto dto) {
+        QueryCategorization queryCategorization = queryCategorizationRepository.findById(dto.getId()).get();
+        queryCategorization.setQueryDocument(dto.getQueryDocument());
+        queryCategorization.setCategoryInCategorizations(
+                dto.getCategories().stream().map(category -> categoryInCategorizationRepository
+                        .findByQueryCategorizationIdAndCategory(dto.getId(), category)).collect(Collectors.toSet())
+        );
         queryCategorizationRepository.save(queryCategorization);
         return ResponseEntity.ok().build();
     }

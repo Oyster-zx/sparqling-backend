@@ -136,26 +136,26 @@ public class DataInitializer implements CommandLineRunner {
 
         QueryCategorization queryCategorization1 = QueryCategorization.builder().queryDocument(document1).build();
         queryCategorization1.setCategoryInCategorizations(new HashSet<>(Arrays.asList(
-                CategoryInCategorization.builder().category(culture).queryCategorization(queryCategorization1).build(),
-                CategoryInCategorization.builder().category(museums).queryCategorization(queryCategorization1).build(),
-                CategoryInCategorization.builder().category(britain).queryCategorization(queryCategorization1).build()
+                CategoryInCategorization.builder().category(culture).build(),
+                CategoryInCategorization.builder().category(museums).build(),
+                CategoryInCategorization.builder().category(britain).build()
         )));
         queryCategorization1 = queryCategorizationRepository.save(queryCategorization1);
 
         QueryCategorization queryCategorization2 = QueryCategorization.builder().queryDocument(document2).build();
         queryCategorization2.setCategoryInCategorizations(new HashSet<>(Arrays.asList(
-                CategoryInCategorization.builder().category(culture).queryCategorization(queryCategorization2).build(),
-                CategoryInCategorization.builder().category(museums).queryCategorization(queryCategorization2).build(),
-                CategoryInCategorization.builder().category(barcelona).queryCategorization(queryCategorization2).build()
+                CategoryInCategorization.builder().category(culture).build(),
+                CategoryInCategorization.builder().category(museums).build(),
+                CategoryInCategorization.builder().category(barcelona).build()
         )));
         queryCategorization2 = queryCategorizationRepository.save(queryCategorization2);
 
         QueryCategorization queryCategorization3 = QueryCategorization.builder().queryDocument(document3).build();
         queryCategorization3.setCategoryInCategorizations(new HashSet<>(Arrays.asList(
-                CategoryInCategorization.builder().category(culture).queryCategorization(queryCategorization3).build(),
-                CategoryInCategorization.builder().category(museums).queryCategorization(queryCategorization3).build(),
-                CategoryInCategorization.builder().category(barcelona).queryCategorization(queryCategorization3).build(),
-                CategoryInCategorization.builder().category(coordinates).queryCategorization(queryCategorization3).build()
+                CategoryInCategorization.builder().category(culture).build(),
+                CategoryInCategorization.builder().category(museums).build(),
+                CategoryInCategorization.builder().category(barcelona).build(),
+                CategoryInCategorization.builder().category(coordinates).build()
         )));
         queryCategorization3 = queryCategorizationRepository.save(queryCategorization3);
 
@@ -167,9 +167,9 @@ public class DataInitializer implements CommandLineRunner {
                 .categorizationScheme(categorizationScheme).build();
         categorization = categorizationRepository.save(categorization);
         categorization.setQueryCategorizations(new HashSet<>(Arrays.asList(queryCategorization1, queryCategorization2, queryCategorization3)));
-        queryCategorization1.setCategorization(categorization);
-        queryCategorization2.setCategorization(categorization);
-        queryCategorization3.setCategorization(categorization);
+//        queryCategorization1.setCategorization(categorization);
+//        queryCategorization2.setCategorization(categorization);
+//        queryCategorization3.setCategorization(categorization);
         categorization = categorizationRepository.save(categorization);
         System.out.println();
     }

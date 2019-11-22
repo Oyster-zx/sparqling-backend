@@ -26,11 +26,6 @@ public class CategoryInCategorization {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
-    @JsonIgnore
-    @ManyToOne(optional = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    QueryCategorization queryCategorization;
-
     @ManyToOne
     Category category;
 }
