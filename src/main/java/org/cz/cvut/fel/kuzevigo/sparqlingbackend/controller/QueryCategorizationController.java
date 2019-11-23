@@ -33,13 +33,10 @@ public class QueryCategorizationController {
     }
 
     @PostMapping("/saveQueryCategorization")
-    public ResponseEntity saveQueryCategorization(@RequestBody QueryCategorizationDto dto) {
+    public ResponseEntity saveQueryCategorization(@RequestBody QueryCategorization dto) {
         QueryCategorization queryCategorization = queryCategorizationRepository.findById(dto.getId()).get();
         queryCategorization.setQueryDocument(dto.getQueryDocument());
-        queryCategorization.setCategoryInCategorizations(
-                dto.getCategories().stream().map(category -> categoryInCategorizationRepository
-                        .findByQueryCategorizationIdAndCategory(dto.getId(), category)).collect(Collectors.toSet())
-        );
+        queryCategorization.setCategories(dto.getCategories());
         queryCategorizationRepository.save(queryCategorization);
         return ResponseEntity.ok().build();
     }

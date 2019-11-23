@@ -39,19 +39,11 @@ public class QueryDocumentController {
     QueryCategorizationRepository queryCategorizationRepository;
 
     @GetMapping("/queryDocuments")
-    List<QueryCategorizationDto> getQueryDocuments(@RequestParam(value = "categorizationId") Long categorizationId,
-                                                   @RequestParam(value = "categoriesIds") List<Long> categoriesIds) {
+    Iterable<QueryCategorization> getQueryDocuments(@RequestParam(value = "categorizationId") Long categorizationId,
+                                                    @RequestParam(value = "categoriesIds") List<Long> categoriesIds) {
         Categorization categorization = categorizationRepository.findById(categorizationId).get();
-        List<QueryCategorization> queryCategorizations = categorization.getQueryCategorizations().stream().filter(queryCategorization ->
-                queryCategorization.getCategoryInCategorizations().stream().map(categoryInCategorization -> categoryInCategorization.getCategory().getId())
+        return categorization.getQueryCategorizations().stream().filter(queryCategorization ->
+                queryCategorization.getCategories().stream().map(Category::getId)
                         .collect(Collectors.toList()).containsAll(categoriesIds)).collect(Collectors.toList());
-        return queryCategorizations.stream().map(queryCategorization -> {
-            return QueryCategorizationDto.builder().id(queryCategorization.getId()).queryDocument(queryCategorization.getQueryDocument())
-                    .categories(
-                            queryCategorization.getCategoryInCategorizations().stream().map(categoryInCategorization -> Category.builder().id(categoryInCategorization.getCategory().getId())
-                                    .name(categoryInCategorization.getCategory().getName())
-                                    .subTerms(categoryInCategorization.getCategory().getSubTerms()).build()).collect(Collectors.toList())
-                    ).build();
-        }).collect(Collectors.toList());
     }
 }
