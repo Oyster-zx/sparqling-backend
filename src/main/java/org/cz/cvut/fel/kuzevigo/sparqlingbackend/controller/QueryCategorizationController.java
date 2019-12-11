@@ -32,6 +32,13 @@ public class QueryCategorizationController {
         return queryCategorizationRepository.findAll();
     }
 
+    @PostMapping("/createQueryCategorization")
+    public ResponseEntity createQueryCategorization(@RequestBody QueryCategorization dto) {
+        QueryCategorization queryCategorization = QueryCategorization.builder().queryDocument(dto.getQueryDocument()).categories(dto.getCategories()).build();
+        queryCategorizationRepository.save(queryCategorization);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/saveQueryCategorization")
     public ResponseEntity saveQueryCategorization(@RequestBody QueryCategorization dto) {
         QueryCategorization queryCategorization = queryCategorizationRepository.findById(dto.getId()).get();
