@@ -39,7 +39,7 @@ public class QueryCategorizationController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/saveQueryCategorization")
+    @PostMapping("/updateQueryCategorization")
     public ResponseEntity saveQueryCategorization(@RequestBody QueryCategorization dto) {
         QueryCategorization queryCategorization = queryCategorizationRepository.findById(dto.getId()).get();
         queryCategorization.setQueryDocument(dto.getQueryDocument());
