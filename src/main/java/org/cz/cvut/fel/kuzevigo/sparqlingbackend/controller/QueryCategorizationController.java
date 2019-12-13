@@ -1,12 +1,16 @@
 package org.cz.cvut.fel.kuzevigo.sparqlingbackend.controller;
 
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.CategorizationRepository;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.CategoryInCategorizationRepository;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.QueryCategorizationRepository;
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dao.QueryDocumentRepository;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.dto.QueryCategorizationDto;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.CategoryInCategorization;
 import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.QueryCategorization;
+import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.QueryDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,6 +29,12 @@ public class QueryCategorizationController {
     QueryCategorizationRepository queryCategorizationRepository;
 
     @Autowired
+    CategorizationRepository categorizationRepository;
+
+    @Autowired
+    QueryDocumentRepository queryDocumentRepository;
+
+    @Autowired
     CategoryInCategorizationRepository categoryInCategorizationRepository;
 
     @GetMapping("/queryCategorizations")
@@ -33,9 +43,12 @@ public class QueryCategorizationController {
     }
 
     @PostMapping("/createQueryCategorization")
-    public ResponseEntity createQueryCategorization(@RequestBody QueryCategorization dto) {
-        QueryCategorization queryCategorization = QueryCategorization.builder().queryDocument(dto.getQueryDocument()).categories(dto.getCategories()).build();
-        queryCategorizationRepository.save(queryCategorization);
+    public ResponseEntity createQueryCategorization(@RequestBody QueryCategorizationDto dto) {
+        QueryCategorization queryCategorization = QueryCategorization.builder().build();
+        queryCategorization.setCategorization(categorizationRepository.findById(dto.getCategorizationId()).orElseThrow(NoSuchElementException::new));
+        queryCategorization.setQueryDocument(queryDocumentRepository.save(dto.getQueryDocument()));
+        queryCategorization.setCategories(dto.getCategories());
+        queryCategorization = queryCategorizationRepository.save(queryCategorization);
         return ResponseEntity.ok().build();
     }
 
