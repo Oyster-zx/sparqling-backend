@@ -7,6 +7,7 @@ import org.cz.cvut.fel.kuzevigo.sparqlingbackend.model.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -29,7 +30,7 @@ public class CategoryController {
     CategorizationSchemeRepository categorizationSchemeRepository;
 
     @GetMapping("/categories")
-    Iterable<Category> getCategories() {
-        return categoryRepository.findAll();
+    Iterable<Category> getCategories(@RequestParam(value = "categorizationSchemaId") Long categorizationSchemaId) {
+        return categoryRepository.findByCategorizationSchemaId(categorizationSchemaId);
     }
 }

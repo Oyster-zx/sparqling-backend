@@ -110,9 +110,12 @@ public class DataInitializer implements CommandLineRunner {
                         "ORDER BY ASC (?name)").build();
         document3 = queryDocumentRepository.save(document3);
 
-        QueryDocumentList queryDocumentList = QueryDocumentList.builder().title("Test queries").build();
-        queryDocumentList.setQueryDocuments(new HashSet<>(Arrays.asList(document1, document2, document3)));
-        queryDocumentListRepository.save(queryDocumentList);
+        QueryDocument mockDocument = QueryDocument.builder().title("Museums in Brittany").description("Museums in Brittany with some more description")
+                .code("SHOULD NOT SEE THIS QUERY").build();
+        mockDocument = queryDocumentRepository.save(mockDocument);
+
+        Category mockCategory = Category.builder().name("Should not see that").build();
+        mockCategory = categoryRepository.save(mockCategory);
 
         Category culture = Category.builder().name("Culture").build();
         culture = categoryRepository.save(culture);
@@ -159,12 +162,21 @@ public class DataInitializer implements CommandLineRunner {
         )));
         queryCategorization3 = queryCategorizationRepository.save(queryCategorization3);
 
+        QueryCategorization mockQueryCategorization = QueryCategorization.builder().queryDocument(mockDocument).build();
+        mockQueryCategorization.setCategories(new HashSet<>(Arrays.asList(
+                mockCategory
+        )));
+        mockQueryCategorization = queryCategorizationRepository.save(mockQueryCategorization);
+
         CategorizationScheme categorizationScheme = CategorizationScheme.builder().title("Wikidata tutorial").build();
         categorizationScheme.setCategories(new HashSet<>(Arrays.asList(culture, museums, britain, barcelona, coordinates)));
         categorizationScheme = categorizationSchemeRepository.save(categorizationScheme);
 
-        Categorization categorization = Categorization.builder().queryDocumentList(queryDocumentList)
-                .categorizationScheme(categorizationScheme).build();
+        CategorizationScheme mockCategorizationScheme = CategorizationScheme.builder().title("Mock").build();
+        mockCategorizationScheme.setCategories(new HashSet<>(Arrays.asList(mockCategory)));
+        mockCategorizationScheme = categorizationSchemeRepository.save(mockCategorizationScheme);
+
+        Categorization categorization = Categorization.builder().categorizationScheme(categorizationScheme).build();
         categorization = categorizationRepository.save(categorization);
         categorization.setQueryCategorizations(new HashSet<>(Arrays.asList(queryCategorization1, queryCategorization2, queryCategorization3)));
         queryCategorization1.setCategorization(categorization);
@@ -174,6 +186,13 @@ public class DataInitializer implements CommandLineRunner {
         queryCategorization1 = queryCategorizationRepository.save(queryCategorization1);
         queryCategorization2 = queryCategorizationRepository.save(queryCategorization2);
         queryCategorization3 = queryCategorizationRepository.save(queryCategorization3);
+
+        Categorization mockCategorization = Categorization.builder().categorizationScheme(mockCategorizationScheme).build();
+        mockCategorization = categorizationRepository.save(mockCategorization);
+        mockCategorization.setQueryCategorizations(new HashSet<>(Arrays.asList(mockQueryCategorization)));
+        mockQueryCategorization.setCategorization(mockCategorization);
+        mockCategorization = categorizationRepository.save(mockCategorization);
+        mockQueryCategorization = queryCategorizationRepository.save(mockQueryCategorization);
 
         System.out.println();
     }
