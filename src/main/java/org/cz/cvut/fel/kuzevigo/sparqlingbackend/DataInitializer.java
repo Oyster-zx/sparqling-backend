@@ -110,12 +110,68 @@ public class DataInitializer implements CommandLineRunner {
                         "ORDER BY ASC (?name)").build();
         document3 = queryDocumentRepository.save(document3);
 
-        QueryDocument mockDocument = QueryDocument.builder().title("Museums in Brittany").description("Museums in Brittany with some more description")
-                .code("SHOULD NOT SEE THIS QUERY").build();
-        mockDocument = queryDocumentRepository.save(mockDocument);
+        QueryDocument document4 = QueryDocument.builder().title("Cathedrals in Paris")
+                .description("Cathedrals in Paris")
+                .code("SELECT ?item ?itemLabel ?placeLabel ?coords ?image\n" +
+                        "WHERE\n" +
+                        "{\n" +
+                        "  ?item wdt:P31 wd:Q2977 .\n" +
+                        "  ?item wdt:P131 ?place .\n" +
+                        "  ?place wdt:P131 wd:Q90 .\n" +
+                        "  OPTIONAL { ?item wdt:P625 ?coords . }\n" +
+                        "  OPTIONAL { ?item wdt:P18 ?image . }\n" +
+                        "  SERVICE wikibase:label { bd:serviceParam wikibase:language \"fr\" . }\n" +
+                        "} ORDER BY ?placeLabel ?itemLabel").build();
+        document4 = queryDocumentRepository.save(document4);
 
-        Category mockCategory = Category.builder().name("Should not see that").build();
-        mockCategory = categoryRepository.save(mockCategory);
+        QueryDocument document5 = QueryDocument.builder().title("Churches in church district Wittenberg")
+                .description("Churches in church district Wittenberg")
+                .code("#defaultView:Map{\"layer\": \"?pbLabel\"}\n" +
+                        "SELECT ?item ?itemLabel ?pbLabel (SAMPLE(?cat) AS ?cat) (SAMPLE(?coord) AS ?coord) (SAMPLE(?img) AS ?img)\n" +
+                        "WHERE {\n" +
+                        "  wd:Q75849591 wdt:P527 [ wdt:P527 ?item; wdt:P361 ?pb ].\n" +
+                        "  ?pb wdt:P31 wd:Q76598130.\n" +
+                        "  ?item wdt:P625 ?coord.\n" +
+                        "  OPTIONAL { ?item wdt:P373 ?cat. }\n" +
+                        "  OPTIONAL { ?item wdt:P18 ?img. }\n" +
+                        "  SERVICE wikibase:label { bd:serviceParam wikibase:language \"de\". }\n" +
+                        "} GROUP BY ?item ?itemLabel ?pbLabel").build();
+        document5 = queryDocumentRepository.save(document5);
+
+        QueryDocument document6 = QueryDocument.builder().title("Museums in Antwerp")
+                .description("Museums in Antwerp")
+                .code("#defaultView:Map\n" +
+                        "SELECT ?item ?itemLabel ?coordinates\n" +
+                        "WHERE\n" +
+                        "{\n" +
+                        "  ?item wdt:P31/wdt:P279* wd:Q33506 ;\n" +
+                        "        wdt:P131 wd:Q12892 ;\n" +
+                        "        wdt:P625 ?coordinates .\n" +
+                        "  SERVICE wikibase:label { bd:serviceParam wikibase:language \"nl, en\" }\n" +
+                        "  }").build();
+        document6 = queryDocumentRepository.save(document6);
+
+        QueryDocument document7 = QueryDocument.builder().title("Louvre artworks in display cases\n")
+                .description("Louvre artworks in display cases\n")
+                .code("#defaultView:ImageGrid\n" +
+                        "SELECT ?item ?itemLabel ?itemDescription ?image WHERE {\n" +
+                        "  #part1: objects in cases\n" +
+                        "  {\n" +
+                        "  ?item wdt:P276             ?case     .\n" +
+                        "  ?case wdt:P31            wd:Q3561331 .\n" +
+                        "  \n" +
+                        "  ?case wdt:P276             ?room     .\n" +
+                        "  ?room wdt:P31/wdt:P279*  wd:Q180516  . # wd:Q15206795\n" +
+                        "  \n" +
+                        "  ?room wdt:P466             ?dep      .\n" +
+                        "  ?dep  wdt:P361+          wd:Q19675\n" +
+                        "  }       \n" +
+                        "  \n" +
+                        "  OPTIONAL { ?item wdt:P18 ?image } # Optionally with an image\n" +
+                        "\n" +
+                        "  SERVICE wikibase:label { bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en,fr\" }\n" +
+                        "}").build();
+        document7 = queryDocumentRepository.save(document7);
 
         Category culture = Category.builder().name("Culture").build();
         culture = categoryRepository.save(culture);
@@ -127,12 +183,25 @@ public class DataInitializer implements CommandLineRunner {
         barcelona = categoryRepository.save(barcelona);
         Category coordinates = Category.builder().name("Coordinates").build();
         coordinates = categoryRepository.save(coordinates);
+        Category churches = Category.builder().name("Churches").build();
+        churches = categoryRepository.save(churches);
+        Category paris = Category.builder().name("Paris").build();
+        paris = categoryRepository.save(paris);
+        Category wittenberg = Category.builder().name("Wittenberg").build();
+        wittenberg = categoryRepository.save(wittenberg);
+        Category antwerp = Category.builder().name("Antwerp").build();
+        antwerp = categoryRepository.save(antwerp);
+        Category louvre = Category.builder().name("Louvre").build();
+        louvre = categoryRepository.save(louvre);
 
-        culture.setSubTerms(new HashSet<>(Arrays.asList(museums)));
+        culture.setSubTerms(new HashSet<>(Arrays.asList(museums, churches)));
         culture = categoryRepository.save(culture);
 
-        museums.setSubTerms(new HashSet<>(Arrays.asList(britain, barcelona)));
+        museums.setSubTerms(new HashSet<>(Arrays.asList(britain, barcelona, antwerp, louvre)));
         museums = categoryRepository.save(museums);
+
+        churches.setSubTerms(new HashSet<>(Arrays.asList(paris, wittenberg)));
+        churches = categoryRepository.save(churches);
 
         barcelona.setSubTerms(new HashSet<>(Arrays.asList(coordinates)));
         barcelona = categoryRepository.save(barcelona);
@@ -162,37 +231,63 @@ public class DataInitializer implements CommandLineRunner {
         )));
         queryCategorization3 = queryCategorizationRepository.save(queryCategorization3);
 
-        QueryCategorization mockQueryCategorization = QueryCategorization.builder().queryDocument(mockDocument).build();
-        mockQueryCategorization.setCategories(new HashSet<>(Arrays.asList(
-                mockCategory
+        QueryCategorization queryCategorization4 = QueryCategorization.builder().queryDocument(document4).build();
+        queryCategorization4.setCategories(new HashSet<>(Arrays.asList(
+                culture,
+                churches,
+                paris
         )));
-        mockQueryCategorization = queryCategorizationRepository.save(mockQueryCategorization);
+        queryCategorization4 = queryCategorizationRepository.save(queryCategorization4);
+
+
+        QueryCategorization queryCategorization5 = QueryCategorization.builder().queryDocument(document5).build();
+        queryCategorization5.setCategories(new HashSet<>(Arrays.asList(
+                culture,
+                churches,
+                wittenberg
+        )));
+        queryCategorization5 = queryCategorizationRepository.save(queryCategorization5);
+
+        QueryCategorization queryCategorization6 = QueryCategorization.builder().queryDocument(document6).build();
+        queryCategorization6.setCategories(new HashSet<>(Arrays.asList(
+                culture,
+                museums,
+                antwerp
+        )));
+        queryCategorization6 = queryCategorizationRepository.save(queryCategorization6);
+
+        QueryCategorization queryCategorization7 = QueryCategorization.builder().queryDocument(document7).build();
+        queryCategorization7.setCategories(new HashSet<>(Arrays.asList(
+                culture,
+                museums,
+                louvre
+        )));
+        queryCategorization7 = queryCategorizationRepository.save(queryCategorization7);
 
         CategorizationScheme categorizationScheme = CategorizationScheme.builder().title("Wikidata tutorial").build();
-        categorizationScheme.setCategories(new HashSet<>(Arrays.asList(culture, museums, britain, barcelona, coordinates)));
+        categorizationScheme.setCategories(new HashSet<>(Arrays.asList(culture, museums, britain, barcelona, coordinates,
+                churches, paris, wittenberg, antwerp, louvre)));
         categorizationScheme = categorizationSchemeRepository.save(categorizationScheme);
-
-        CategorizationScheme mockCategorizationScheme = CategorizationScheme.builder().title("Mock").build();
-        mockCategorizationScheme.setCategories(new HashSet<>(Arrays.asList(mockCategory)));
-        mockCategorizationScheme = categorizationSchemeRepository.save(mockCategorizationScheme);
 
         Categorization categorization = Categorization.builder().categorizationScheme(categorizationScheme).build();
         categorization = categorizationRepository.save(categorization);
-        categorization.setQueryCategorizations(new HashSet<>(Arrays.asList(queryCategorization1, queryCategorization2, queryCategorization3)));
+        categorization.setQueryCategorizations(new HashSet<>(Arrays.asList(queryCategorization1, queryCategorization2, queryCategorization3
+                , queryCategorization4, queryCategorization5, queryCategorization6, queryCategorization7)));
         queryCategorization1.setCategorization(categorization);
         queryCategorization2.setCategorization(categorization);
         queryCategorization3.setCategorization(categorization);
+        queryCategorization4.setCategorization(categorization);
+        queryCategorization5.setCategorization(categorization);
+        queryCategorization6.setCategorization(categorization);
+        queryCategorization7.setCategorization(categorization);
         categorization = categorizationRepository.save(categorization);
         queryCategorization1 = queryCategorizationRepository.save(queryCategorization1);
         queryCategorization2 = queryCategorizationRepository.save(queryCategorization2);
         queryCategorization3 = queryCategorizationRepository.save(queryCategorization3);
-
-        Categorization mockCategorization = Categorization.builder().categorizationScheme(mockCategorizationScheme).build();
-        mockCategorization = categorizationRepository.save(mockCategorization);
-        mockCategorization.setQueryCategorizations(new HashSet<>(Arrays.asList(mockQueryCategorization)));
-        mockQueryCategorization.setCategorization(mockCategorization);
-        mockCategorization = categorizationRepository.save(mockCategorization);
-        mockQueryCategorization = queryCategorizationRepository.save(mockQueryCategorization);
+        queryCategorization4 = queryCategorizationRepository.save(queryCategorization4);
+        queryCategorization5 = queryCategorizationRepository.save(queryCategorization5);
+        queryCategorization6 = queryCategorizationRepository.save(queryCategorization6);
+        queryCategorization7 = queryCategorizationRepository.save(queryCategorization7);
 
         System.out.println();
     }

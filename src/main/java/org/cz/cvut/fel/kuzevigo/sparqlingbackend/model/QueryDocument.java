@@ -22,9 +22,9 @@ public class QueryDocument {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
-    @Column
+    @Column(columnDefinition = "TEXT")
     String title;
-    @Column
+    @Column(columnDefinition = "TEXT")
     String description;
     @Column(columnDefinition = "TEXT")
     String code;
