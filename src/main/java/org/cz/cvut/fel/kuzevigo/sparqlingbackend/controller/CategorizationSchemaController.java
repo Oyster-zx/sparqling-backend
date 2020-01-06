@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author ikuzevanov on 2019-11-15.
  */
 @RestController
-@CrossOrigin( origins = "http://localhost:3000")
+@CrossOrigin( origins = {"http://localhost:3000", "http://194.1.237.231:3000"})
 public class CategorizationSchemaController {
 
     @Autowired

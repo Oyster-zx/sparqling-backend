@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@CrossOrigin( origins = "http://localhost:3000")
+@CrossOrigin( origins = {"http://localhost:3000", "http://194.1.237.231:3000"})
 public class CategorizationController {
 
     @Autowired
